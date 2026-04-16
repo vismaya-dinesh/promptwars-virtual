@@ -2,6 +2,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangle, Users, MapPin, Activity } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { useState, useEffect } from 'react';
+import PersonnelTracker from '../components/PersonnelTracker';
+import AnomalyFeed from '../components/AnomalyFeed';
 
 export default function StaffOperations({ state }) {
   const [history, setHistory] = useState([]);
@@ -54,46 +56,10 @@ export default function StaffOperations({ state }) {
               </div>
            </div>
            
-           <div className="grid grid-cols-2 gap-6">
-              {state.personnel.map((p, i) => (
-                <div key={i} className="bg-white/5 border border-white/10 rounded-xl p-4 flex items-center gap-4">
-                   <div className="bg-blue-500/20 p-3 rounded-full">
-                     <MapPin className="text-blue-400" />
-                   </div>
-                   <div>
-                     <div className="text-sm text-slate-400 capitalize">{p.role} Unit</div>
-                     <div className="font-bold text-white">{p.location}</div>
-                   </div>
-                </div>
-              ))}
-           </div>
+           <PersonnelTracker personnel={state.personnel} />
         </div>
 
-        {/* Alerts Feed */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl">
-           <h3 className="text-lg font-bold font-syne mb-6 flex items-center gap-2">
-             <AlertTriangle size={18} className="text-critical" /> Active Anomalies
-           </h3>
-           <div className="space-y-4">
-              <AnimatePresence>
-                {state.alerts.map(alert => (
-                   <motion.div 
-                     layout
-                     initial={{ opacity: 0, x: 20 }}
-                     animate={{ opacity: 1, x: 0 }}
-                     key={alert.id}
-                     className={`p-4 rounded-xl border relative overflow-hidden ${alert.severity === 'critical' ? 'bg-critical/10 border-critical/40 text-rose-200' : 'bg-amber-500/10 border-amber-500/40 text-amber-200'}`}
-                   >
-                      <div className="font-semibold text-sm mb-1 uppercase tracking-wider opacity-80">{alert.severity} PRIORITY</div>
-                      <div className="flex gap-2 items-center">
-                         {alert.severity === 'critical' && <span className="absolute left-0 top-0 bottom-0 w-1 bg-critical animate-pulse"></span>}
-                         {alert.message}
-                      </div>
-                   </motion.div>
-                ))}
-              </AnimatePresence>
-           </div>
-        </div>
+        <AnomalyFeed alerts={state.alerts} />
 
       </div>
     </motion.div>

@@ -9,7 +9,12 @@ function App() {
   const [venueState, setVenueState] = useState(null);
   
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:8000/ws');
+    // Dynamically determine WebSocket URL
+    const wsUrl = import.meta.env.DEV 
+      ? 'ws://localhost:8000/ws' 
+      : `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`;
+    
+    const ws = new WebSocket(wsUrl);
     ws.onmessage = (event) => {
       setVenueState(JSON.parse(event.data));
     };

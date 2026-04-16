@@ -1,8 +1,11 @@
 import asyncio
 import json
 import random
+import os
 from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 app = FastAPI(title="VenueFlow API")
 
@@ -51,3 +54,15 @@ async def websocket_endpoint(websocket: WebSocket):
             await asyncio.sleep(2)
     except Exception as e:
         print(f"WebSocket closed: {e}")
+
+# Serve static files from the "static" directory
+if os.path.isdir("static"):
+    app.mount("/assets", StaticFiles(directory="static/assets"), name="assets")
+
+    # Catch-all for SPA routing
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        file_path = f"static/{full_path}"
+        if os.path.isfile(file_path):
+            return FileResponse(file_path)
+        return FileResponse("static/index.html")

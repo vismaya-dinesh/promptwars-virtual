@@ -1,67 +1,98 @@
-# SmartVenue (VenueFlow)
+# VenueFlow 🏟️
+**Live venue intelligence. Optimized for your experience.**
 
-**Live Demo**: [https://venueflow-bdknjnccqa-uc.a.run.app](https://venueflow-bdknjnccqa-uc.a.run.app)
+A real-time AI-powered venue management dashboard built for Google's PromptWars challenge.
+VenueFlow provides two views — one for attendees and one for staff — connected by a live
+WebSocket data stream that simulates the full state of a large-scale sporting venue.
 
-SmartVenue is a mobile-first AI dashboard and live monitoring system designed for modern venue management. It provides a real-time, interactive overview of the venue, tracking metrics like crowd density, queue wait times, active alerts, and personnel locations. 
+🔗 **Live Demo:** https://venueflow-bdknjnccqa-uc.a.run.app
 
-With a dynamic Single Page Application (SPA) architecture, the solution features interactive Map and Queue views, live-simulated filtering, and heatmaps to ensure a responsive and intuitive user experience.
+---
+
+## 📸 What It Looks Like
+
+### Attendee Live View
+- Color-coded crowd density cards across Sections A–D (green = clear, amber = busy)
+- Real-time wait times for Food Stands, Restrooms & Merch Stores
+- One-tap Order Concessions button
+- Emergency SOS button
+
+### Staff Ops — Command Operations View
+- Live Facility Crowd Index (multi-line animated chart)
+- Active Anomalies feed with priority levels (Low / Critical)
+- Real-time personnel tracking — Security & Medical unit locations
+- System status indicator (Nominal / Alert)
+
+---
 
 ## 🚀 Features
-- **Live State Simulation**: Real-time websocket streaming of venue state including crowd density across sections, wait times for amenities, simulated alerts, and staff positioning.
-- **Interactive Dashboard**: Modern, responsive React SPA containing multiple views (Map, Queue, Dashboard) designed for mobile-first but fully responsive.
-- **High-Performance API**: Python FastAPI backend ensuring low-latency communication via WebSockets and serving static assets.
-- **Cloud Run Ready**: Fully configured for containerized deployment on Google Cloud Run.
 
-## 💻 Technology Stack
-- **Frontend**: React, Vite, CSS (Mobile-first responsive design)
-- **Backend**: Python, FastAPI, WebSockets
-- **Deployment**: Google Cloud Run (Buildpacks)
+- **Live WebSocket Streaming** — venue state updates in real time including crowd density,
+  wait times, anomaly alerts, and staff positions
+- **Dual-View SPA** — Attendee Live and Staff Ops views in a single React app
+- **Anomaly Detection Feed** — prioritized alerts (e.g. "Crowd surge at North Gate")
+- **Personnel Tracker** — live Security and Medical unit location display
+- **Mobile-First Design** — fully responsive, works on any screen size
+- **Cloud Run Deployed** — zero-config containerized deployment
+
+---
+
+## 💻 Tech Stack
+
+| Layer      | Technology                        |
+|------------|-----------------------------------|
+| Frontend   | React, Vite, CSS (mobile-first)   |
+| Backend    | Python, FastAPI, WebSockets       |
+| Deployment | Google Cloud Run (Buildpacks)     |
+
+---
 
 ## 🛠️ Local Development
 
 ### Prerequisites
-- Node.js & npm (for frontend)
-- Python 3.8+ (for backend)
+- Node.js & npm
+- Python 3.8+
 
 ### 1. Start the Backend
-The backend serves the API, WebSocket server, and static files.
-
 ```bash
 cd backend
-
-# Create a virtual environment (optional but recommended)
 python -m venv venv
-# On Windows: venv\Scripts\activate
-# On Mac/Linux: source venv/bin/activate
-
-# Install dependencies
+source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-
-# Start the development server
 uvicorn main:app --reload
 ```
-The backend API will be running at `http://localhost:8000`.
+Backend runs at `http://localhost:8000`
 
 ### 2. Start the Frontend
-In a new terminal window:
-
 ```bash
 cd frontend
-
-# Install dependencies
 npm install
-
-# Start the Vite development server
 npm run dev
 ```
+Frontend runs at `http://localhost:5173`
 
-The frontend should now be running, usually accessible at `http://localhost:5173`. 
+---
 
-## ☁️ Deployment
+## ☁️ Deployment (Google Cloud Run)
 
-This project uses Google Cloud Buildpacks for zero-config deployments. The FastAPI backend is set up to automatically serve the frontend's compiled static assets out of the `backend/static/` directory.
+```bash
+# 1. Build the frontend
+cd frontend && npm run build
 
-To deploy on Cloud Run:
-1. Build the Vite frontend: `npm run build`
-2. Copy the contents of `frontend/dist` to `backend/static/`
-3. Deploy the `backend` folder via gcloud or Google Cloud Console.
+# 2. Copy build output to backend static folder
+cp -r dist/* ../backend/static/
+
+# 3. Deploy via gcloud
+cd ../backend
+gcloud run deploy
+```
+
+The FastAPI backend automatically serves the compiled React frontend
+from the `backend/static/` directory.
+
+---
+
+## 🏆 Built For
+Google PromptWars — built end-to-end using Antigravity,
+Google's agent-first AI IDE. The prompt was engineered manually;
+the agent handled planning, coding, and deployment autonomously.
